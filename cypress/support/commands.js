@@ -10,7 +10,7 @@ Cypress.Commands.add(
   ) => {
     cy.get("#firstName").clear().type(data.firstName);
     cy.get("#lastName").clear().type(data.lastName);
-    cy.get("#email").clear().type(data.email);
+    cy.get("#email").clear().type(data.email, {log: false});
     cy.get("#open-text-area").clear().type(data.textArea, { delay: 0 });
     // cy.enviar()
   }
