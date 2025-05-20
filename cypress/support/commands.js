@@ -1,18 +1,21 @@
 Cypress.Commands.add(
   "fillMandatoryFieldsAndSubmit",
-  ({ firstName, lastName, email, textArea }) => {
-    cy.get("#firstName").type(firstName);
-    cy.get("#lastName").type(lastName);
-    cy.get("#email").type(email);
-    cy.get("#open-text-area").type(textArea, { delay: 0 });
-    cy.enviar()
-    cy.get(".success > strong").should(
-      "contain",
-      "Mensagem enviada com sucesso."
-    );
+  (
+    data = {
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      textArea: "Texto padrão de envio de mensagem",
+    }
+  ) => {
+    cy.get("#firstName").clear().type(data.firstName);
+    cy.get("#lastName").clear().type(data.lastName);
+    cy.get("#email").clear().type(data.email);
+    cy.get("#open-text-area").clear().type(data.textArea, { delay: 0 });
+    // cy.enviar()
   }
 );
 
 Cypress.Commands.add("enviar", () => {
-  cy.contains('Enviar').click();
+  cy.contains("button", "Enviar").click();
 });

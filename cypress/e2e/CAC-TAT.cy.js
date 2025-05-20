@@ -5,7 +5,7 @@ describe("Central de Atendimento ao Cliente TAT", () => {
     cy.visit("./src/index.html");
   });
 
-  it("verifica o título da aplicação ", () => {
+  it("Verifica o título da aplicação ", () => {
     cy.title().should("be.equal", "Central de Atendimento ao Cliente TAT");
   });
 
@@ -17,7 +17,7 @@ describe("Central de Atendimento ao Cliente TAT", () => {
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
       { delay: 0 }
     );
-    cy.get(".button").click();
+    cy.enviar()
     cy.get(".success > strong").should(
       "contain",
       "Mensagem enviada com sucesso."
@@ -32,8 +32,8 @@ describe("Central de Atendimento ao Cliente TAT", () => {
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
       { delay: 0 }
     );
-    cy.get(".button").click();
-    cy.get(".error");
+    cy.enviar()
+    cy.get(".error").should("be.visible");
   });
 
   it("Ex. 3 - exibe mensagem de erro ao submeter o formulário com um telefone com formatação inválida", () => {
@@ -49,26 +49,35 @@ describe("Central de Atendimento ao Cliente TAT", () => {
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
       { delay: 0 }
     );
-    cy.get(".button").click();
-    cy.get(".error");
+    cy.enviar()
+    cy.get(".error").should("be.visible");
   });
 
   it("Ex. 5 - preenche e limpa os campos nome, sobrenome, email e telefone", () => {
-    cy.get("#firstName").type("Kayo").should("not.have.value", "");
-    cy.get("#firstName").clear().should("have.value", "");
-    cy.get("#lastName").type("Renato").should("not.have.value", "");
-    cy.get("#lastName").clear().should("have.value", "");
+    cy.get("#firstName")
+      .type("Kayo")
+      .should("have.value", "Kayo")
+      .clear()
+      .should("have.value", "");
+    cy.get("#lastName")
+      .type("Renato")
+      .should("have.value", "Renato")
+      .clear()
+      .should("have.value", "");
     cy.get("#email")
       .type("kayorenatocontatogmail.com")
-      .should("not.have.value", "");
-    cy.get("#email").clear().should("have.value", "");
-    cy.get("#phone").type("274897238947").should("not.have.value", "");
-    cy.get("#phone").clear().should("have.value", "");
-    cy.get("#phone").should("have.value", "");
+      .should("have.value", "kayorenatocontatogmail.com")
+      .clear()
+      .should("have.value", "");
+    cy.get("#phone")
+      .type("274897238947")
+      .should("have.value", "274897238947")
+      .clear()
+      .should("have.value", "");
   });
 
   it("Ex. 6 - exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios", () => {
-    cy.get(".button").click();
+    cy.enviar()
     cy.get(".error > strong").should(
       "have.text",
       "Valide os campos obrigatórios!"
@@ -76,15 +85,24 @@ describe("Central de Atendimento ao Cliente TAT", () => {
   });
 
   it("Ex. 7 - envia o formuário com sucesso usando um comando customizado", () => {
-    cy.fillMandatoryFieldsAndSubmit({
+    const data = {
       firstName: "Kayo",
       lastName: "Renato",
       email: "kayorenatocontato@gmail.com",
       textArea: "Este é um teste com campos obrigatórios preenchidos.",
-    });
+    };
+
+    cy.fillMandatoryFieldsAndSubmit(data);
+    cy.fillMandatoryFieldsAndSubmit();
+
+    cy.enviar();
+    cy.get(".success > strong").should(
+      "contain",
+      "Mensagem enviada com sucesso."
+    );
   });
 
-  it.only("Ex. 8 - envia o formuário com sucesso usando um comando customizado", () => {
+  it("Ex. 8 - envia o formuário com sucesso usando um comando customizado", () => {
     cy.fillMandatoryFieldsAndSubmit({
       firstName: "Kayo",
       lastName: "Renato",
